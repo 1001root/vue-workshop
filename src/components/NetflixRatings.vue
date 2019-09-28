@@ -5,23 +5,23 @@
         <div>
           <h4 class="title">Netflix Ratings</h4>
           <div class="actions">
-            <button class="btn">Lowest rated</button>
-            <button class="btn">Highest rated</button>
+            <button @click="lowestOne" class="btn">Lowest rated</button>
+            <button @click="highestOne" class="btn">Highest rated</button>
           </div>
         </div>
         <div class="search">
-          <input type="text" class="form-control" placeholder="Search by title" />
+          <input v-model="searchStr" type="text" class="form-control" placeholder="Search by title" />
         </div>
       </div>
       <div class="content">
         <table class="table">
           <thead>
-            <th></th>
+            <th v-for="(items,index) in columns" :key="index">{{items}}</th>
           </thead>
           <tbody>
-            <tr>
-              <td></td>
-              <td></td>
+            <tr v-for="(item,index) in filterMovies" :key="index">
+              <td >{{item.title}}</td>
+              <td>{{item.rating}}</td>
             </tr>
           </tbody>
         </table>
@@ -35,6 +35,9 @@ export default {
   name: "NetflixRatings",
   data: function() {
     return {
+      searchStr: '',
+      // lowest_rating = {},
+      // highest_rating = {},
       columns: ["title", "rating"],
       ratingsInfo: [
         { title: `Grey's Anatomy`, rating: 98 },
@@ -57,9 +60,37 @@ export default {
         { title: `Hunter X Hunter`, rating: 57 },
         { title: `Marvel's Luke Cage`, rating: 95 },
         { title: `Marvel's Iron Fist`, rating: 98 }
-      ]
+      ],
     };
+  },
+
+  computed:{
+    filterMovies(){
+      return this.ratingsInfo.filter(info => {
+        return info.title.toLowerCase().includes(this.searchStr.toLowerCase());
+      });
+    }
+  },
+  methods:{
+    lowestOne(){
+      // arr_rating = [],
+      // ratingsInfo.array.forEach(element => {
+      //   arr_rating.push(element)
+      // });
+      // console.log(arr_rating);
+      this.ratingsInfo.sort((a, b) => (a.rating > b.rating ? 1 : -1));
+
+    },
+  
+  highestOne(){
+      this.ratingsInfo.sort((a, b) => (a.rating < b.rating ? 1 : -1));
+    },
+
+    searchString(){
+
+    }
   }
+
 };
 </script>
 
