@@ -5,7 +5,7 @@
         <h4 class="title">Netflix Ratings</h4>
       </div>
       <div class="search">
-        <input type="text" class="form-control" placeholder="Search by title" />
+        <input v-model="searchStr" type="text" class="form-control" placeholder="Search by title" />
       </div>
       <div class="content">
         <div>
@@ -16,9 +16,9 @@
             <p></p>
           </div>
           <ul class="list">
-            <li>
-              <a href></a>
-              <span>By:</span>
+            <li v-for="(newsElement,index) in news" :key="index">
+              <a :href="newsElement.url">{{newsElement.title}}</a>
+              <span v-if="newsElement.title">By:{{newsElement.author}}</span>
             </li>
           </ul>
         </div>
@@ -28,8 +28,43 @@
 </template>
 
 <script>
+import axios from "axios"
 export default {
-  name: "HackerNews"
+  name: "HackerNews",
+  data(){
+    return{
+      searchStr: '',
+      news: []
+    };
+  },
+  async created(){
+    try{
+      /* eslint-disable */
+    const response = await axios.get("http://hn.algolia.com/api/v1/search") ;
+    this.news = response.data.hits;
+    console.log(this.news);
+    }
+    catch(error){
+      /* eslint-disable */
+      console.log(error);
+    }
+    // console.log("component created");
+  },
+  watch: {
+    async searchStr(value){
+      console.log(value);
+      try{
+      /* eslint-disable */
+    const response = await axios.get("http://hn.algolia.com/api/v1/search",{params:{query: value}}) ;
+    this.news = response.data.hits;
+    console.log(this.news);
+    }
+    catch(error){
+      /* eslint-disable */
+      console.log(error);
+    }
+    }
+  }
 };
 </script>
 
